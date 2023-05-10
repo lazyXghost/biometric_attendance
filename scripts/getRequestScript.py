@@ -5,7 +5,7 @@ import requests
 # import numpy as np
 
 # url = 'http://localhost:5000/predict'
-# image = cv2.imread('Extras/Self made model/Dataset/val_spoofed.jpeg')
+# image = cv2.imread('../Extras/Self made model/Dataset/val_spoofed.jpeg')
 # image_array = np.array(image)
 # image_json = json.dumps(image_array.tolist())
 # headers = {'Content-Type': 'application/json'}
