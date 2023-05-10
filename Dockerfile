@@ -10,7 +10,8 @@ WORKDIR /app
 RUN python3.10 -m pip install -r requirements.txt
 COPY . /app
 
-RUN export FLASK_APP=app.py
+ENV FLASK_APP=app.py
+ENV PYTHONUNBUFFERED=1
 EXPOSE 8000
 ENTRYPOINT [ "python3.10" ]
 CMD ["-m", "flask", "run", "--host=0.0.0.0", "--port=8000"]
