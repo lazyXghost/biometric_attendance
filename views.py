@@ -2,7 +2,7 @@ from flask import request, jsonify
 import json
 from utils import *
 import numpy as np
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 
 """
 Student.query.filter_by(firstname='Sammy').all()
@@ -18,50 +18,39 @@ id = 1
 
 def markAttendance():
     img = np.array(json.loads(request.json), dtype=np.uint8)
-    return jsonify(predictSpoofing(img))
+    real = (predictSpoofing(img) == "Real")
+    if real:
+        detected_user_id = 1
+        addattendance(detected_user_id, date.today(), True)
+        res = "Marked Attendance"
+    else:
+        res = "Spoofing detected"
+    return jsonify(res)
 
 
 def leaveRequest():
-    requestjson = {
-        "student_id": 1,
-        "name": "dishti",
-        "rollno": "b20286",
-        "mobile": "8130091185",
-        "email": "b20286.students.iitmandi.ac.in",
-        "hostel": "B16",
-        "roomno": 13,
-        "home_town": 1,
-        "start": date(2023, 5, 20),
-        "end": date(2023, 5, 30),
-        "location": "Delhi",
-        "emergency_no": "813009",
-        "status": 1,
-    }
-    student_id = requestjson["student_id"]
-    start = requestjson["start"]
-    end = requestjson["end"]
-    location = requestjson["location"]
-    emergency_no = requestjson["emergency_no"]
-    home_town = requestjson["home_town"]
-    status = requestjson["status"]
-    addLeave(student_id, start, end, location, emergency_no, home_town, status)
-    return "Approved"
+    body = json.loads(request.json)
+    addLeave(body["student_id"], datetime.strptime(body['start'],'%Y-%m-%d').date(), datetime.strptime(body['end'],'%Y-%m-%d').date(), body["location"], body["emergency_no"], body["home_town"], body["status"])
+    return jsonify("Leave requested")
 
 
 def attendanceRecord():
-    datejson = {"startdate": date(2023, 5, 10), "enddate": date(2023, 5, 15)}
+    body = json.loads(request.json)
     res = {}
-    start = datejson["startdate"]
-    end = datejson["enddate"]
-    curr = start
-    while curr <= end:
-        dict = fetchUserAttendanceStatus(id, curr)
-        res[dict["date"]] = dict["status"]
-        curr += timedelta(days=1)
-    return res
+    start = datetime.strptime(body['startdate'],'%Y-%m-%d').date()
+    end = datetime.strptime(body['enddate'],'%Y-%m-%d').date()
+    curr_date = start
+    while curr_date <= end:
+        leave_object = fetchUserAttendance(id, curr_date)
+        if leave_object:
+            curr_attendance = leave_object.status
+        else:
+            curr_attendance = False
+        res[curr_date.strftime('%Y-%m-%d')] = curr_attendance
+        curr_date += timedelta(days=1)
+    return jsonify(res)
 
 
 def leaveStatus():
-    data = getUserLeaveStatus(id)
-    print(data)
-    return "Hola"
+    data = getUserLeaves(id)
+    return jsonify(data)

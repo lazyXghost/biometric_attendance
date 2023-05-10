@@ -52,16 +52,22 @@ def addLeave(student_id, start, end, location, emergency_no, home_town, status):
     )
     db.session.add(data)
     db.session.commit()
-    return "Hola"
 
 
-def fetchUserAttendanceStatus(student_id, date):
-    data = Attendance.query.filter_by(student_id=student_id, date=date)
-    print(data)
-    return "Hola"
+def addattendance(student_id, date, status):
+    data = Attendance(student_id=student_id, date=date, status=status)
+    db.session.add(data)
+    db.session.commit()
 
 
-def getUserLeaveStatus(student_id):
-    data = Leave.query.filter_by(student_id=student_id).all()
-    print(data)
-    return "Hola"
+def fetchUserAttendance(student_id, date):
+    data = Attendance.query.filter_by(student_id=student_id, date=date).first()
+    return data
+
+
+def getUserLeaves(student_id):
+    data = {}
+    leaves = Leave.query.filter_by(student_id=student_id).all()
+    for leave in leaves:
+        data[leave.id] = {"start": leave.start, "end": leave.end, "status": leave.status}
+    return data
