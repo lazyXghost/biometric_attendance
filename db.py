@@ -1,23 +1,25 @@
 from flask_sqlalchemy import SQLAlchemy
-import os
-from app import app
+from context import app
 
-basedir = os.path.abspath(os.path.dirname(__file__))
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'database.db')
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 db = SQLAlchemy(app)
 
-class Attendance(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    date = db.Column(db.Date)
 
-class StudentDetails(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+class StudentDetail(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(255))
     rollno = db.Column(db.String(20))
 
-class Leaves(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+
+class Attendance(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    student_id = db.Column(db.Integer, db.ForeignKey("student_detail.id"))
+    date = db.Column(db.Date)
+    status = db.Column(db.Boolean)
+
+
+class Leave(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    student_id = db.Column(db.Integer, db.ForeignKey("student_detail.id"))
     start = db.Column(db.Date)
     end = db.Column(db.Date)
     location = db.Column(db.String(255))

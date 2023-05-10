@@ -1,7 +1,8 @@
 from flask import request, jsonify
+import json
 from utils import *
 import numpy as np
-import json
+from datetime import date, timedelta
 
 """
 Student.query.filter_by(firstname='Sammy').all()
@@ -12,25 +13,55 @@ def student(student_id):
     return render_template('student.html', student=student)
 """
 
+id = 1
+
+
 def markAttendance():
-    # POST REQUEST
     img = np.array(json.loads(request.json), dtype=np.uint8)
-    return (jsonify(predictSpoofing(img)))
+    return jsonify(predictSpoofing(img))
+
 
 def leaveRequest():
-    # POST REQUEST
-    # requires user to logged in
-    # you will get form data in post request just need to store it in database
+    requestjson = {
+        "student_id": 1,
+        "name": "dishti",
+        "rollno": "b20286",
+        "mobile": "8130091185",
+        "email": "b20286.students.iitmandi.ac.in",
+        "hostel": "B16",
+        "roomno": 13,
+        "home_town": 1,
+        "start": date(2023, 5, 20),
+        "end": date(2023, 5, 30),
+        "location": "Delhi",
+        "emergency_no": "813009",
+        "status": 1,
+    }
+    student_id = requestjson["student_id"]
+    start = requestjson["start"]
+    end = requestjson["end"]
+    location = requestjson["location"]
+    emergency_no = requestjson["emergency_no"]
+    home_town = requestjson["home_town"]
+    status = requestjson["status"]
+    addLeave(student_id, start, end, location, emergency_no, home_town, status)
     return "Approved"
 
+
 def attendanceRecord():
-    # POST REQUEST
-    # requires user logged in 
-    # you will get dates to check attendance between in post request and on the basis of them fetch from database
-    return "Absent all time"
+    datejson = {"startdate": date(2023, 5, 10), "enddate": date(2023, 5, 15)}
+    res = {}
+    start = datejson["startdate"]
+    end = datejson["enddate"]
+    curr = start
+    while curr <= end:
+        dict = fetchUserAttendanceStatus(id, curr)
+        res[dict["date"]] = dict["status"]
+        curr += timedelta(days=1)
+    return res
+
 
 def leaveStatus():
-    # GET REQUEST
-    # requires user logged in
-    # check all the leaves of the user logged in and return his all leaves
-    return "Not approved"
+    data = getUserLeaveStatus(id)
+    print(data)
+    return "Hola"

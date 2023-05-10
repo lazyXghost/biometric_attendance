@@ -2,3 +2,4 @@
 **/Videos
 venv
 **/__pycache__
+.vscode
