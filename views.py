@@ -1,7 +1,7 @@
-# from flask import request, jsonify
-# from utils import *
-# import numpy as np
-# import json
+from flask import request, jsonify
+from utils import *
+import numpy as np
+import json
 
 """
 Student.query.filter_by(firstname='Sammy').all()
@@ -12,10 +12,10 @@ def student(student_id):
     return render_template('student.html', student=student)
 """
 
-# def markAttendance():
-#     # POST REQUEST
-#     img = np.array(json.loads(request.json), dtype=np.uint8)
-#     return (jsonify(predictSpoofing(img)))
+def markAttendance():
+    # POST REQUEST
+    img = np.array(json.loads(request.json), dtype=np.uint8)
+    return (jsonify(predictSpoofing(img)))
 
 def leaveRequest():
     # POST REQUEST
