@@ -3,6 +3,8 @@ import json
 from utils import *
 import numpy as np
 from datetime import date, timedelta, datetime
+from io import BytesIO
+# from PIL import Image
 
 """
 Student.query.filter_by(firstname='Sammy').all()
@@ -17,14 +19,18 @@ id = 1
 
 
 def markAttendance():
-    img = np.array(json.loads(request.json), dtype=np.uint8)
-    real = (predictSpoofing(img) == "Real")
-    if real:
-        detected_user_id = 1
-        addattendance(detected_user_id, date.today(), True)
-        res = "Marked Attendance"
-    else:
-        res = "Spoofing detected"
+    # image_data = request.json['image']
+    # pil_image = Image.open(BytesIO(image_data))
+    # pil_image.save('output.jpg')
+    # res = "Hola"
+    # img = np.array(json.loads(request.json), dtype=np.uint8)
+    # real = (predictSpoofing(img) == "Real")
+    # if real:
+    detected_user_id = 1
+    addattendance(detected_user_id, date.today(), True)
+    res = "Marked Attendance"
+    # else:
+    #     res = "Spoofing detected"
     return jsonify(res)
 
 
@@ -36,7 +42,7 @@ def leaveRequest():
 
 
 def attendanceRecord():
-    body = json.loads(request.json)
+    body = request.json
     res = {}
     start = datetime.strptime(body['startdate'],'%Y-%m-%d').date()
     end = datetime.strptime(body['enddate'],'%Y-%m-%d').date()
@@ -49,6 +55,7 @@ def attendanceRecord():
             curr_attendance = False
         res[curr_date.strftime('%Y-%m-%d')] = curr_attendance
         curr_date += timedelta(days=1)
+    print(res)
     return jsonify(res)
 
 
