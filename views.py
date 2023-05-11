@@ -29,8 +29,9 @@ def markAttendance():
 
 
 def leaveRequest():
-    body = json.loads(request.json)
-    addLeave(body["student_id"], datetime.strptime(body['start'],'%Y-%m-%d').date(), datetime.strptime(body['end'],'%Y-%m-%d').date(), body["location"], body["emergency_no"], body["home_town"], body["status"])
+    id = 1
+    body = request.json
+    addLeave(id, datetime.strptime(body['start'],'%Y-%m-%d').date(), datetime.strptime(body['end'],'%Y-%m-%d').date(), body["location"], body["emergency_no"], body["home_town"], body["status"])
     return jsonify("Leave requested")
 
 
